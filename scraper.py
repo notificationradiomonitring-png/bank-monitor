@@ -95,7 +95,7 @@ def fetch_youtube():
                 ts = datetime.fromisoformat(s["publishedAt"].replace("Z", "+00:00"))
                 out.append(mk(bank, "YouTube", s["title"], s.get("description", ""), watch + vid, ts, views.get(vid, 0)))
         except Exception as ex:
-            print("youtube error", bank, ex)
+            print("youtube error", bank, ex) fetch_social()
     return out
 
 _ACTIVE_MODEL = None
