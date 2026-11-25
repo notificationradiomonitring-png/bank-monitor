@@ -95,7 +95,28 @@ def fetch_youtube():
                 ts = datetime.fromisoformat(s["publishedAt"].replace("Z", "+00:00"))
                 out.append(mk(bank, "YouTube", s["title"], s.get("description", ""), watch + vid, ts, views.get(vid, 0)))
         except Exception as ex:
-            print("youtube error", bank, ex) fetch_social()
+            print("youtube error", bank, ex) 
+    return out 
+    def fetch_social():
+    out = []
+    socials = {
+        "Facebook": "facebook.com",
+        "X (Twitter)": "x.com",
+        "Instagram": "instagram.com",
+        "TikTok": "tiktok.com",
+        "LinkedIn": "linkedin.com",
+    }
+        base = "https:" + chr(47) + chr(47) + "news." + "google.com" + chr(47) + "rss" + chr(47) + "search?q="
+    for bank, queries in BANKS.items():
+        q_bank = queries[int(chr(48))]
+        for label, domain in socials.items():
+            url = base + quote(f"{q_bank} site:{domain} when:3d") + "&hl=ar&gl=EG&ceid=EG:ar"
+            try:
+                for e in feedparser.parse(url).entries[:5]:
+                    ts = datetime(*e.published_parsed[:6], tzinfo=ZoneInfo("UTC")) if getattr(e, "published_parsed", None) else now()
+                    out.append(mk(bank, label, e.title, e.get("summary", ""), e.link, ts))
+            except Exception as ex:
+                print(label, "error", bank, ex)
     return out
 
 _ACTIVE_MODEL = None
@@ -218,7 +239,7 @@ def main():
         except Exception as ex:
             print("load error", ex)
     seen = set(prev.get("seen", []))
-    raw = fetch_news() + fetch_reddit() + fetch_youtube()
+    raw = fetch_news() + fetch_social() + fetch_reddit() + fetch_youtube()
     fresh = [x for x in raw if x["id"] not in seen]
     print(f"Fetched: {len(raw)}, Fresh: {len(fresh)}")
     kept = analyze(fresh)
