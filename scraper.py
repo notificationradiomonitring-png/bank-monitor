@@ -98,12 +98,32 @@ def fetch_youtube():
             print("youtube error", bank, ex)
     return out
 
+_ACTIVE_MODEL = None
+
+def get_model(headers):
+    global _ACTIVE_MODEL
+    if _ACTIVE_MODEL:
+        return _ACTIVE_MODEL
+    m_url = "https:" + chr(47) + chr(47) + "api." + "groq.com" + chr(47) + "openai" + chr(47) + "v1" + chr(47) + "models"
+    r = requests.get(m_url, headers=headers, timeout=30)
+    r.raise_for_status()
+    ids = [m["id"] for m in r.json().get("data", []) if "whisper" not in m["id"] and "guard" not in m["id"]]
+    for pref in ["llama-3.3-70b", "gpt-oss", "llama", "qwen", "gemma"]:
+        for mid in ids:
+            if pref in mid.lower():
+                _ACTIVE_MODEL = mid
+                print("Using Groq model:", _ACTIVE_MODEL)
+                return _ACTIVE_MODEL
+    _ACTIVE_MODEL = ids
+    print("Using Groq model:", _ACTIVE_MODEL)
+    return _ACTIVE_MODEL
+
 def ask_groq(prompt, system, max_tokens=4000):
     api_url = "https:" + chr(47) + chr(47) + "api." + "groq.com" + chr(47) + "openai" + chr(47) + "v1" + chr(47) + "chat" + chr(47) + "completions"
-    r = requests.post(api_url, timeout=120, headers={
-        "Authorization": f"Bearer {os.environ['GROQ_API_KEY']}",
-        "Content-Type": "application/json"},
-        json={"model": MODEL, "max_tokens": max_tokens, "temperature": 0.2,
+    headers = {"Authorization": f"Bearer {os.environ['GROQ_API_KEY']}", "Content-Type": "application/json"}
+    model_id = get_model(headers)
+    r = requests.post(api_url, timeout=120, headers=headers,
+        json={"model": model_id, "max_tokens": max_tokens, "temperature": 0.2,
               "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}]})
     if r.status_code != 200:
         print("Groq detail:", r.status_code, r.text[:300])
