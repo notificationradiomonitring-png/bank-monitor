@@ -8,7 +8,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 
 CAIRO = ZoneInfo("Africa/Cairo")
-MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 DATA_FILE, XLSX_FILE = "data.json", "banks_report.xlsx"
 MAX_ITEMS = 3000
 NBE = "البنك الأهلي المصري"
@@ -99,14 +99,16 @@ def fetch_youtube():
     return out
 
 def ask_groq(prompt, system, max_tokens=4000):
-    api_url = "".join(["https://", "api.", "groq.", "com/openai/v1/chat/completions"])
+    api_url = "https://" + "://groq.com"
     r = requests.post(api_url, timeout=120, headers={
         "Authorization": f"Bearer {os.environ['GROQ_API_KEY']}",
         "Content-Type": "application/json"},
         json={"model": MODEL, "max_tokens": max_tokens, "temperature": 0.2,
               "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}]})
+    if r.status_code != 200:
+        print("Groq detail:", r.status_code, r.text[:300])
     r.raise_for_status()
-    return r.json()["choices"][0]["message"]["content"]
+    return r.json()["choices"]["message"]["content"]
 def analyze(items):
     system = "أنت محلل رصد إعلامي للقطاع المصرفي المصري. أجب بمصفوفة JSON صالحة فقط بدون أي نص آخر أو علامات Markdown."
     kept = []
