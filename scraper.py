@@ -99,7 +99,7 @@ def fetch_youtube():
     return out
 
 def ask_groq(prompt, system, max_tokens=4000):
-           api_url = "https:" + chr(47) + chr(47) + "api." + "groq.com" + chr(47) + "openai" + chr(47) + "v1" + chr(47) + "chat" + chr(47) + "completions"
+    api_url = "https:" + chr(47) + chr(47) + "api." + "groq.com" + chr(47) + "openai" + chr(47) + "v1" + chr(47) + "chat" + chr(47) + "completions"
     r = requests.post(api_url, timeout=120, headers={
         "Authorization": f"Bearer {os.environ['GROQ_API_KEY']}",
         "Content-Type": "application/json"},
