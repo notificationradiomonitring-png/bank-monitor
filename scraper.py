@@ -98,14 +98,14 @@ def fetch_youtube():
             print("youtube error", bank, ex) 
     return out 
 def fetch_social():
-out = []
-socials = {
-    "Facebook": "facebook.com",
-    "X (Twitter)": "x.com",
-    "Instagram": "instagram.com",
-    "TikTok": "tiktok.com",
-    "LinkedIn": "linkedin.com",
-}
+    out = []
+    socials = {
+        "Facebook": "facebook.com",
+        "X (Twitter)": "x.com",
+        "Instagram": "instagram.com",
+        "TikTok": "tiktok.com",
+        "LinkedIn": "linkedin.com",
+    }
     base = "https:" + chr(47) + chr(47) + "news." + "google.com" + chr(47) + "rss" + chr(47) + "search?q="
 for bank, queries in BANKS.items():
     q_bank = queries[int(chr(48))]
