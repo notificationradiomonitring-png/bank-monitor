@@ -128,7 +128,7 @@ def get_model(headers):
     r = requests.get(m_url, headers=headers, timeout=30)
     r.raise_for_status()
     ids = [m["id"] for m in r.json().get("data", []) if "whisper" not in m["id"] and "guard" not in m["id"]]
-    for pref in ["llama-3.3", "llama-3.1", "qwen", "gemma", "llama", "gpt-oss"]:
+    for pref in ["llama-3.3", "llama-3.1", "gemma", "llama", "mistral", "qwen", "gpt-oss"]:
         for mid in ids:
             if pref in mid.lower():
                 _ACTIVE_MODEL = mid
@@ -153,8 +153,8 @@ def ask_groq(prompt, system, max_tokens=800):
 def analyze(items):
     system = "You are an Egyptian banking media analyst. Return ONLY a valid JSON array with no markdown."
     kept = []
-    for i in range(0, min(len(items), 35), 5):
-        batch = items[i:i + 5]
+    for i in range(0, min(len(items), 80), 8):
+        batch = items[i:i + 8]
         payload = [{"id": b["id"], "bank": b["bank"], "platform": b["platform"], "title": b["title"], "text": b["snippet"][:180]} for b in batch]
         prompt = (
             "Return a JSON array only. For each item return: id, relevant (true if about the bank), "
@@ -164,7 +164,7 @@ def analyze(items):
             raw_res = ask_groq(prompt, system).strip()
             m = re.search(r"\[.*\]", raw_res, flags=re.S)
             res = {x["id"]: x for x in json.loads(m.group(0) if m else raw_res)}
-            time.sleep(10)
+            time.sleep(5)
         except Exception as ex:
             print("analysis error:", ex)
             time.sleep(15)
