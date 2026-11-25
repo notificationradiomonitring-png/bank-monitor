@@ -1,8 +1,8 @@
 name: bank-monitor
 on:
   schedule:
-    - cron: "0 * * * *"   # كل ساعة
-  workflow_dispatch:        # تشغيل يدوي
+    - cron: "0 * * * *"
+  workflow_dispatch:
 permissions:
   contents: write
 concurrency: bank-monitor
@@ -12,7 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: { python-version: "3.12", cache: pip }
+        with:
+          python-version: "3.12"
+          cache: pip
       - run: pip install -r requirements.txt
       - run: python scraper.py
         env:
@@ -25,6 +27,6 @@ jobs:
       - name: Commit data
         run: |
           git config user.name "bank-monitor-bot"
-          git config user.email "bot@users.noreply.github.com"
+          git config user.email "bot@://github.com"
           git add data.json banks_report.xlsx
-         git diff --staged --quiet || (git commit -m "update data" && git pull --rebase && git push)
+          git diff --staged --quiet || (git commit -m "update data" && git pull --rebase && git push)
