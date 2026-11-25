@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-25T22:03:58.915550+02:00",
+  "updated": "2026-11-25T22:51:30.971347+02:00",
   "items": [
     {
       "id": "c77a975c0ccd782b",
@@ -28,6 +28,19 @@
       "sentiment": "محايد"
     },
     {
+      "id": "c8df33382d4ee6a2",
+      "bank": "CIB",
+      "platform": "أخبار - بوابة المصرف",
+      "title": "قطاع البنوك بالبورصة يتراجع 0.1% في ختام تعاملات.. «التجاري الدولي» يرتفع و«فيصل» يتصدّر الصعود - بوابة المصرف",
+      "snippet": "قطاع البنوك بالبورصة يتراجع 0.1% في ختام تعاملات.. «التجاري الدولي» يرتفع و«فيصل» يتصدّر الصعود بوابة المصرف",
+      "url": "https://news.google.com/rss/articles/CBMixgJBVV95cUxQMVpENTJETW5FUUNLQ1NWWjg5d0VBdkF0QjVMaThCSTVWN0lQaS1jXzVZWDVKZnJNTUkzVEM1dE9FWW56V3hZeDI2S3NZTjlOWkpjNzBVV2R4andfcHRHX3lkOGNDTC15dmcycmVXUXNvQ21vM3d3X0F2R0RSS25qOVNzaS1hcUFTUDVXUEJGckxwN0VISl9IckRVa01mWTV0Q0lZMk1HXzJ2VC10SWdjaFctUnBub1RGb3A2WDFzQ29DN0VieGJ0a2dDNzEtQkNpdlE5LS15djZONWVkRW5IN2pYRUwxamdrSS1LWFB1MGRjajV2eTJQeDBRbEFpUFlUYXFGXzJ1OTUza196Vk5ZejY0cE1OT2RyMDJsQlJucFhLZjNDUmFVc0d2OFdMVXdCd0xpZm9xekJwekVUVWdxOG5vSXBQdw?oc=5",
+      "ts": "2026-11-25T18:47:37+02:00",
+      "engagement": 0,
+      "summary": "The banking sector on the stock exchange fell by 0.1%, while Commercial International Bank (CIB) shares rose.",
+      "type": "Financial",
+      "sentiment": "إيجابي"
+    },
+    {
       "id": "abb22fada34abbee",
       "bank": "البنك الأهلي المصري",
       "platform": "أخبار - بنكي",
@@ -54,6 +67,19 @@
       "sentiment": "محايد"
     },
     {
+      "id": "0f26e4683ed196d7",
+      "bank": "البنك الأهلي المصري",
+      "platform": "أخبار - المصري اليوم",
+      "title": "شهادات البنك الأهلي 2026.. كم تربح من استثمار 200 ألف جنيه؟ - المصري اليوم",
+      "snippet": "شهادات البنك الأهلي 2026.. كم تربح من استثمار 200 ألف جنيه؟ المصري اليوم",
+      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTFA1cXl0dGViQUJBUFhBNlVXMTNMMGhiVlpyZGwxZ1E5TlVHZkN2aHBFWUV0cjc4OVJoZlAzdFlNS2ItWF9OM1lfaVhDS0lwZ01XZ0pKSDIwRHpzdFFmWm1r?oc=5",
+      "ts": "2026-11-25T16:29:00+02:00",
+      "engagement": 0,
+      "summary": "The article details the potential returns from investing 200,000 EGP in National Bank of Egypt certificates for 2026.",
+      "type": "Product",
+      "sentiment": "محايد"
+    },
+    {
       "id": "e95886ee658dedf9",
       "bank": "البنك الأهلي المصري",
       "platform": "أخبار - المصري اليوم",
@@ -64,6 +90,32 @@
       "engagement": 0,
       "summary": "The National Bank of Egypt has increased the interest rate on its 'Investment A' certificate and outlined the conditions for obtaining it.",
       "type": "Product",
+      "sentiment": "إيجابي"
+    },
+    {
+      "id": "49475a7cb28b4ba8",
+      "bank": "CIB",
+      "platform": "أخبار - بنكي",
+      "title": "البنك التجاري الدولي CIB يطرح حساب التوفير اليومي Premium بالدولار - بنكي",
+      "snippet": "البنك التجاري الدولي CIB يطرح حساب التوفير اليومي Premium بالدولار بنكي",
+      "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTFBxT29wVGI4WWdEdDRacFMxZVhrTzBQWTZWNWp3UHVWUHBMNkwwd01SMEFKVlQzRF9TRFE0RHlXOEJHV0YzUFdV?oc=5",
+      "ts": "2026-11-25T14:36:50+02:00",
+      "engagement": 0,
+      "summary": "Commercial International Bank (CIB) launched a new daily Premium savings account denominated in US Dollars.",
+      "type": "Product",
+      "sentiment": "إيجابي"
+    },
+    {
+      "id": "cd597a6f844a962e",
+      "bank": "البنك الأهلي المصري",
+      "platform": "أخبار - Masrawy",
+      "title": "البنك الأهلي يوقع بروتوكول لتمكين 1000 من فاقدي الأطراف بالتعاون مع مؤسسة \"إيدينا مع بعض\" للتأهيل - Masrawy",
+      "snippet": "البنك الأهلي يوقع بروتوكول لتمكين 1000 من فاقدي الأطراف بالتعاون مع مؤسسة \"إيدينا مع بعض\" للتأهيل Masrawy",
+      "url": "https://news.google.com/rss/articles/CBMi8gVBVV95cUxNb0d1elk1VHJtYkJOWU1mYkhIenpzWllma05CNHhSaXpmQXc5elJmUGZNR1hacnFMbzlIV2R0aG9HX1huUS1aU18wWjZsWnVidEdEdmU2TW11MEdnTDNVeWRreUdiZ3BpbnNKTGlreGxid1YxN21QZWoyX05xOWJWQkFpcGczTmROX01DMERicjV4XzV1VEdoaEQ0ZGtqYk1MN25SZkpPY1h6MHlNa2dqaG5rbUcwazVBbzdLRnR6elVRVzJqZWRCX1FudXE5MUg1MjRkYm1MUGdfdXdSMmNVVk1BVUxTYmNQZng1Zkllc1IxWFN3RGVKaFl2MVctZF9ZSlQwaHY4eG91eDhzSngxZ2t2RDRMWmE1YXN1c3ROWW52SVpEc0dROWk5QXlyMk9uMmwxU1lqbDZ5RnZQZ09jaU1SSnQ3UjZzMmZJNzd4Z2pUSFB0Wmp4ZXp2S2xoWFdqUG9fVU5RNHpIZ294eVNRNGNvbFVYUEl6TTVHLTFxT0tmUlZNRmhpMHdrQmZSUHRaNlVMMkZBT0JFeElOSi13ME5SNzFjeDNmaHdSWFV0bU0wTzJOemlQRGVBUk5HR0dBdlBtQXJKbXB5aEptQmtCOUFHbHlZdVlqdGlFVGxqUTFMb3hTR09oU1h1UmE3ZW5qdjk0SXhBbjg2cHA0NS1QbVdya3l2STFmUVdPWXhTSFpxNk9wY1Y0LUE4aGlRN0MyMXF6SEs2YmxabDBHQkd0WWxmUjVGbl93WWZqb3F3bkRVZ0tUWnNZQ211Y2JOZ1RxV3ZhU0JTSnZFckpxaE56elpTYlJQeVI3RjNVZkRHdmZiOHUzSTVEWGoyMlBfUlNrdFZ5bkNPZDBWMmdOYU9zaVY4OEVINGlRbFp3aTgwdXpiY3puSVFoWVBLblYzdlVSbWRkXzJxcVdsX3pjWlJLSF9NR3FVTHRPR2lFcDJZZHZnOFV4cGU1RlVLNjdqZEpESVhhNjZIR1otWWZub3VudWFB0gH3BUFVX3lxTE96ZFhQdnlmTXZrUzZCamxmZXdIazNIQzFyUVgxZ2UtVHh5ZWhISWNUdzNJVEhRcWR2dGV0MjRVWXN2cnZiZzJ6WmxtSVRBWkxXUGQyaXgwaVBTZGd5WFlCUVRZeEVTS3FKQWh3dGdvcUZFZ1RVY3RMVjhTSkQyX1ljNVBBa2JZQktpWlZsdFhwX3BvRVJmd01xM1FlcWl4cDBLckNmdzJjNjNBTXFneFRmQ2ZiZ1gtSGR2b2NUVDBneERwYWE3dFdwaklWbTZoOTlQTFZnMkY5c19wb1VPSm0xZEUyQmNnQmFKSmx2QzRMZUFnTlE5NlNTemN2UElkVFFibnRQZXMxMkdoMDJ5Y3F6NGROQmc2S3ZqZlFPRm1QMmIxanZRUUJqQmtHMjA4aDB1LTkzb0NGMmRGbG1lQXNnN2lMM0p4OUxvd2VxZDg4aUg2MU5YcEtxTWQ0blgyUEFRX3Q5VWl3UXpTdno2VEZUMVdWQm5KZUFIQnJoREdrLUNiZWZSM291Q0JXRWxuTmJRbnMyQVFjVWxiWnJzZC1GVHNTUW5jb0tYbUd6dXRmQjZzUXhKSGJPUVFLN2hwMG1kUmUycWx5QjFSWVdVVXhJdmtWQ0Y4cm1XNS1wSUp0SnRvQ3F4QUhsUTJLQ0xGM1hmUzJJTEdPZkFGb3pJbXI0Q1ZmUHoxTFB1dWNxOVFLMnZsam1KZ21oRFJiVVRlTTlZUnZmS2luWnRXLUQ5cVJndFpxRUZsRVk1alJMdjNsSFA1aW5Ja0pvcGMwcTRZTDNELTFwejdxMXV5UjBoZVhqWmNIQzlSb3d3UzhJWU9PSFY2STQwN0UxVmNWT3N2TkpiajVObHkyWDJoS0kxeUpTcGdSbTZZbENHemEwZ2NySnFYT19fWFZFRldfREFkVmN1eWdfUVM3R1pyWmJXdlVJZ05sNEpsMlpVTlpTZXk1LUEyR2wzUHI1RUZsdG1PbTFIWHMxaEJ4eWxBR2xQcG1aMUdRYnNPNA?oc=5",
+      "ts": "2026-11-25T14:06:05+02:00",
+      "engagement": 0,
+      "summary": "The National Bank of Egypt signed a protocol to empower 1,000 amputees in cooperation with the 'Idina Ma Ba3d' rehabilitation foundation.",
+      "type": "News",
       "sentiment": "إيجابي"
     },
     {
@@ -119,6 +171,45 @@
       "sentiment": "محايد"
     },
     {
+      "id": "c2a16b0c153eb312",
+      "bank": "البنك الأهلي المصري",
+      "platform": "أخبار - الوطن",
+      "title": "طريقة تحميل تطبيق BM Pay من بنك مصر.. خطوات تفعيل الدفع بالموبايل مع الأهلي وCIB - الوطن",
+      "snippet": "طريقة تحميل تطبيق BM Pay من بنك مصر.. خطوات تفعيل الدفع بالموبايل مع الأهلي وCIB الوطن",
+      "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1OVU1MUzJLNVpicHFqYmZiWmdBbVlCb3lpMWNkZEhNZ0xGekY3aThLX0RtQnRUV2kwQVIySkQtZE5YYjNsakMzenk4UG9pRGgxeWdseUprSE1EdzJw?oc=5",
+      "ts": "2026-11-25T09:40:20+02:00",
+      "engagement": 0,
+      "summary": "The article explains how to download the BM Pay app and activate mobile payments with the National Bank of Egypt and CIB.",
+      "type": "Product",
+      "sentiment": "محايد"
+    },
+    {
+      "id": "3373c3b16ea1c5a3",
+      "bank": "بنك مصر",
+      "platform": "أخبار - ارقام : اخبار ومعلومات سوق الأسهم السعودي - تاسي",
+      "title": "المركزي الإماراتي يقرر إجراء تفتيش خاص وعاجل على فروع بنك مصر في الإمارات - ارقام : اخبار ومعلومات سوق الأسهم السعودي - تاسي",
+      "snippet": "المركزي الإماراتي يقرر إجراء تفتيش خاص وعاجل على فروع بنك مصر في الإمارات ارقام : اخبار ومعلومات سوق الأسهم السعودي - تاسي",
+      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE56cVYxczJVT3YyNmlmWkwwaHlYSUNkT29lTUY2T084d1dmbndCREROZVdFcS1LOHQyREgwQUIyOUxnM1BwaXp3UzlkNmtnemxCWmJEYUxxamFoSWJNWWdYRkRsVENsR3NuNGc?oc=5",
+      "ts": "2026-11-25T08:20:59+02:00",
+      "engagement": 0,
+      "summary": "The UAE Central Bank decides to conduct a special and urgent inspection of Bank of Egypt branches in the UAE.",
+      "type": "News",
+      "sentiment": "محايد"
+    },
+    {
+      "id": "aac286162cdbe516",
+      "bank": "البنك الأهلي المصري",
+      "platform": "أخبار - ارقام : اخبار ومعلومات سوق الأسهم السعودي - تاسي",
+      "title": "البنك الأهلي المصري يحصل على موافقة مبدئية للاستحواذ على فروع بنك مصر في الإمارات - ارقام : اخبار ومعلومات سوق الأسهم السعودي - تاسي",
+      "snippet": "البنك الأهلي المصري يحصل على موافقة مبدئية للاستحواذ على فروع بنك مصر في الإمارات ارقام : اخبار ومعلومات سوق الأسهم السعودي - تاسي",
+      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBJZzRnYkRqZ2pJdV9QaGhJV0pMT0hDd2hsN1MtTFhjTTFtQ2tITTJaTFZmeEpKQzRSSHZZR1BtNDFlcEo5TVo4ajVlM0g4QXJFNVZPaUViOHJMNGtIM2FNOXZtN1ozd2lfcEE?oc=5",
+      "ts": "2026-11-25T07:01:55+02:00",
+      "engagement": 0,
+      "summary": "The National Bank of Egypt received preliminary approval to acquire Bank of Egypt branches in the UAE.",
+      "type": "News",
+      "sentiment": "إيجابي"
+    },
+    {
       "id": "1bbfad0f879db0a7",
       "bank": "بنك مصر",
       "platform": "أخبار - Forbes Middle East",
@@ -159,25 +250,52 @@
     }
   ],
   "seen": [
-    "c8a53975bed895be",
-    "9c2f10d2261d2d97",
-    "4453bc8d8565fffc",
-    "abb22fada34abbee",
-    "7eda42825e0a114e",
-    "5f0a4928e9537531",
-    "8f19dbc180dc4be9",
-    "b6cf4c02f436a379",
-    "99d5eb0afb97716c",
-    "8bf6f75db412e972",
-    "c77a975c0ccd782b",
-    "b522aa0f124153e0",
+    "28e31ca3daec0d3a",
     "d0a1d2a5990c4c4f",
-    "0086dbf94157d8bc",
-    "15702b8a0c700ee2",
-    "6d500e3cf6dd7711",
-    "1bbfad0f879db0a7",
+    "66746a6508714e08",
     "e95886ee658dedf9",
-    "28e31ca3daec0d3a"
+    "abb22fada34abbee",
+    "496637237df37a1b",
+    "bd547f4eb66df90f",
+    "8bf6f75db412e972",
+    "c8df33382d4ee6a2",
+    "c8a53975bed895be",
+    "15702b8a0c700ee2",
+    "99040c56b7c9b60e",
+    "7eda42825e0a114e",
+    "99d5eb0afb97716c",
+    "0c59ffb5ab2e324a",
+    "c6c70d3be8e6626f",
+    "3373c3b16ea1c5a3",
+    "ddc4db815bc0e0f8",
+    "5f0a4928e9537531",
+    "f98df29ce84fd36d",
+    "8f19dbc180dc4be9",
+    "c2a16b0c153eb312",
+    "74927b02de70cb20",
+    "1bbfad0f879db0a7",
+    "aac286162cdbe516",
+    "9c2f10d2261d2d97",
+    "dd0c0ea39b945fda",
+    "b6cf4c02f436a379",
+    "1228d2afc76395ea",
+    "b522aa0f124153e0",
+    "b130d27ca4526bc1",
+    "6d500e3cf6dd7711",
+    "0086dbf94157d8bc",
+    "7d83f100aa3d014d",
+    "cd597a6f844a962e",
+    "0f26e4683ed196d7",
+    "c77a975c0ccd782b",
+    "7e3d5ec7d234ae45",
+    "e37e6d765b034324",
+    "49475a7cb28b4ba8",
+    "4e03d4ee51c70894",
+    "4453bc8d8565fffc",
+    "86792fbea4839342"
   ],
-  "benchmark": null
+  "benchmark": {
+    "generated": "2026-11-25T22:51:29.377890+02:00",
+    "text": "**Strategic Benchmark: National Bank of Egypt (NBE) vs. Competitors (3-Day Window)**\n\n1. **Dominance in Volume:** NBE leads with 14 mentions, significantly outpacing Bank of Misr (3) and CIB (2), indicating superior media visibility and market presence.\n2. **Sentiment Resilience:** NBE maintains a 36% positive sentiment ratio (5/14) with zero negative reports, matching CIB’s 100% positive rate but on a much larger scale.\n3. **Competitor Gap:** Key rivals like QNB, ADIB, and HSBC recorded zero activity, suggesting NBE is currently the primary driver of banking sector news flow.\n4. **Product-Driven Engagement:** High neutral volume (9/14) stems from daily FX rates and certificate details, highlighting NBE’s role as the default reference for retail financial data.\n5. **CSR Differentiation:** NBE’s initiative to empower 1,000 amputees via the 'Idina Ma Ba3d' foundation provides a distinct social impact narrative absent in competitors' recent coverage.\n6. **Rate Strategy Impact:** The increase in 'Investment A' certificate rates generated positive sentiment, demonstrating effective use of pricing power to attract deposits.\n7. **FX Sensitivity:** Frequent reporting on dollar fluctuations at NBE underscores its central role in the Egyptian FX market, making it a barometer for currency stability.\n8. **Market Leadership:** With no negative sentiment and high engagement, NBE solidifies its position as the most trusted and visible banking institution in Egypt.\n\n**Recommendations:**\n1. **Leverage CSR for Brand Loyalty:** Expand the 'Idina Ma Ba3d' partnership into a broader community health initiative to differentiate from CIB and Bank of Misr, enhancing emotional brand connection.\n2. **Optimize Digital FX Communication:** Given high neutral traffic on exchange rates, launch a real-time, user-friendly FX alert feature to convert passive rate watchers into active depositors or traders."
+  }
 }
