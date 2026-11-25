@@ -1,0 +1,30 @@
+name: bank-monitor
+on:
+  schedule:
+    - cron: "0 * * * *"   # كل ساعة
+  workflow_dispatch:        # تشغيل يدوي
+permissions:
+  contents: write
+concurrency: bank-monitor
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - run: python scraper.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          TWILIO_SID: ${{ secrets.TWILIO_SID }}
+          TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
+          TWILIO_FROM: ${{ secrets.TWILIO_FROM }}
+          WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
+      - name: Commit data
+        run: |
+          git config user.name "bank-monitor-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data.json banks_report.xlsx
+          git diff --staged --quiet || (git commit -m "update data" && git push)

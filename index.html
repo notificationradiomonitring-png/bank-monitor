@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>رصد البنوك المصرية</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  body{font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;background:#F2F4F0;color:#16241E}
+  .panel{background:#fff;border:1px solid #D9DFD8;border-radius:6px}
+  input,select{background:#fff;border:1px solid #CBD3CB;border-radius:6px;padding:.45rem .7rem;font-size:.875rem}
+  input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid #0E6B4F;outline-offset:1px}
+  .tab[aria-selected=true]{border-bottom:3px solid #0E6B4F;font-weight:700}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useMemo } = React;
+const NBE = "البنك الأهلي المصري";
+const GREEN = "#0E6B4F", GREY = "#9AA59E", RED = "#B3392F", GOLD = "#B8892B";
+const SENT = { "إيجابي": GREEN, "سلبي": RED, "محايد": GREY };
+const n = (x) => new Intl.NumberFormat("ar-EG").format(x);
+
+function Chart_({ type, data, options }) {
+  const ref = useRef();
+  useEffect(() => {
+    const c = new Chart(ref.current, { type, data,
+      options: { responsive: true, maintainAspectRatio: false, ...options } });
+    return () => c.destroy();
+  }, [JSON.stringify(data)]);
+  return <div className="h-60"><canvas ref={ref} /></div>;
+}
+
+function Clock() {
+  const [t, setT] = useState(new Date());
+  useEffect(() => { const i = setInterval(() => setT(new Date()), 1000); return () => clearInterval(i); }, []);
+  const o = { timeZone: "Africa/Cairo" };
+  return (
+    <div className="text-left" dir="ltr">
+      <div className="text-2xl font-bold tabular-nums">{t.toLocaleTimeString("en-GB", o)}</div>
+      <div className="text-xs text-stone-600" dir="rtl">
+        {t.toLocaleDateString("ar-EG", { ...o, weekday: "long", day: "numeric", month: "long", year: "numeric" })} · القاهرة
+      </div>
+    </div>
+  );
+}
+
+const shareWA = (text) => window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+
+function Kpi({ label, value, sub, accent }) {
+  return (
+    <div className="panel p-4" style={{ borderTop: `4px solid ${accent || "#D9DFD8"}` }}>
+      <div className="text-sm text-stone-600">{label}</div>
+      <div className="text-3xl font-bold mt-1">{value}</div>
+      {sub && <div className="text-xs text-stone-500 mt-1">{sub}</div>}
+    </div>
+  );
+}
+
+function App() {
+  const [data, setData] = useState(null);
+  const [err, setErr] = useState(false);
+  const [tab, setTab] = useState("live");
+  const [f, setF] = useState({ q: "", bank: "", platform: "", period: "", eng: "" });
+
+  const load = () => fetch("data.json?t=" + Date.now()).then(r => r.json())
+    .then(d => { setData(d); setErr(false); }).catch(() => setErr(true));
+  useEffect(() => { load(); const i = setInterval(load, 60000); return () => clearInterval(i); }, []);
+
+  const all = data?.items || [];
+  const banks = useMemo(() => [...new Set(all.map(i => i.bank))], [all]);
+  const platforms = useMemo(() => [...new Set(all.map(i => i.platform.split(" - ")[0]))], [all]);
+
+  const items = useMemo(() => {
+    const now = Date.now();
+    const days = { today: 1, "3": 3, "7": 7 }[f.period];
+    return all.filter(i =>
+      (!f.bank || i.bank === f.bank) &&
+      (!f.platform || i.platform.startsWith(f.platform)) &&
+      (!days || now - new Date(i.ts) < days * 864e5) &&
+      (!f.eng || i.engagement >= +f.eng) &&
+      (!f.q || (i.summary + i.title + i.bank).includes(f.q)));
+  }, [all, f]);
+
+  const byBank = useMemo(() => {
+    const m = {}; items.forEach(i => m[i.bank] = (m[i.bank] || 0) + 1);
+    return Object.entries(m).sort((a, b) => b[1] - a[1]);
+  }, [items]);
+  const hours = useMemo(() => {
+    const h = Array(24).fill(0); items.forEach(i => h[+i.time.slice(0, 2)]++); return h;
+  }, [items]);
+  const nbe = items.filter(i => i.bank === NBE);
+  const share = items.length ? Math.round(nbe.length / items.length * 100) : 0;
+  const pos = nbe.length ? Math.round(nbe.filter(i => i.sentiment === "إيجابي").length / nbe.length * 100) : 0;
+  const neg = nbe.filter(i => i.sentiment === "سلبي").length;
+  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  const bm = data?.benchmark;
+
+  return (
+    <div className="max-w-6xl mx-auto p-4 space-y-4">
+      <header className="panel p-4 flex flex-wrap items-center gap-4 justify-between">
+        <div>
+          <h1 className="text-xl font-bold">رصد البنوك المصرية</h1>
+          <div className="text-xs text-stone-500">
+            {err ? "تعذّر تحميل البيانات — سيُعاد المحاولة تلقائياً" :
+              data?.updated ? "آخر تحديث: " + new Date(data.updated).toLocaleString("ar-EG", { timeZone: "Africa/Cairo" }) : "في انتظار أول تشغيل للمحرك"}
+          </div>
+        </div>
+        <Clock />
+      </header>
+
+      <div className="panel p-3 flex flex-wrap gap-2">
+        <input className="flex-1 min-w-[180px]" placeholder="ابحث في الأخبار والملخصات" value={f.q} onChange={set("q")} />
+        <select value={f.bank} onChange={set("bank")}><option value="">كل البنوك</option>{banks.map(b => <option key={b}>{b}</option>)}</select>
+        <select value={f.platform} onChange={set("platform")}><option value="">كل المنصات</option>{platforms.map(p => <option key={p}>{p}</option>)}</select>
+        <select value={f.period} onChange={set("period")}>
+          <option value="">كل الفترات</option><option value="today">آخر 24 ساعة</option><option value="3">آخر 3 أيام</option><option value="7">آخر 7 أيام</option>
+        </select>
+        <select value={f.eng} onChange={set("eng")}>
+          <option value="">كل مستويات التفاعل</option><option value="10">تفاعل 10+</option><option value="100">تفاعل 100+</option><option value="1000">تفاعل 1000+</option>
+        </select>
+      </div>
+
+      <div role="tablist" className="flex gap-6 border-b border-stone-300">
+        {[["live", "الرصد والمؤشرات"], ["bench", "مقارنة كل 3 أيام"]].map(([k, l]) =>
+          <button key={k} role="tab" aria-selected={tab === k} className="tab py-2" onClick={() => setTab(k)}>{l}</button>)}
+      </div>
+
+      {tab === "live" && <>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Kpi label="إجمالي الرصد" value={n(items.length)} sub="حسب الفلاتر الحالية" />
+          <Kpi label={"حصة ظهور " + NBE} value={n(share) + "٪"} sub={n(nbe.length) + " عنصر"} accent={GREEN} />
+          <Kpi label="الانطباع الإيجابي للأهلي" value={n(pos) + "٪"} accent={GOLD} />
+          <Kpi label="أخبار سلبية عن الأهلي" value={n(neg)} accent={RED} />
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-3">
+          <div className="panel p-4"><h2 className="font-semibold mb-2">حصة الظهور</h2>
+            <Chart_ type="doughnut" data={{ labels: byBank.map(b => b[0]), datasets: [{ data: byBank.map(b => b[1]),
+              backgroundColor: byBank.map(b => b[0] === NBE ? GREEN : ["#C9D1CA", "#B2BCB4", "#9AA59E", "#838F87"][byBank.findIndex(x => x[0] === b[0]) % 4]) }] }}
+              options={{ plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { family: "IBM Plex Sans Arabic" } } } } }} /></div>
+          <div className="panel p-4"><h2 className="font-semibold mb-2">ساعات الذروة (القاهرة)</h2>
+            <Chart_ type="bar" data={{ labels: hours.map((_, i) => i), datasets: [{ data: hours, backgroundColor: GOLD }] }}
+              options={{ plugins: { legend: { display: false } } }} /></div>
+          <div className="panel p-4"><h2 className="font-semibold mb-2">حجم التغطية لكل بنك</h2>
+            <Chart_ type="bar" data={{ labels: byBank.map(b => b[0]), datasets: [{ data: byBank.map(b => b[1]),
+              backgroundColor: byBank.map(b => b[0] === NBE ? GREEN : GREY) }] }}
+              options={{ indexAxis: "y", plugins: { legend: { display: false } } }} /></div>
+        </div>
+
+        <section className="panel">
+          <div className="p-3 flex items-center justify-between border-b border-stone-200">
+            <h2 className="font-semibold">الرصد الحي ({n(items.length)})</h2>
+            <a href="banks_report.xlsx" download className="bg-[#0E6B4F] text-white text-sm rounded px-3 py-1.5">تحميل ملف Excel</a>
+          </div>
+          {items.length === 0 && <p className="p-6 text-stone-500">لا توجد نتائج مطابقة. جرّب تخفيف الفلاتر أو انتظر التشغيل القادم للمحرك.</p>}
+          <ul className="divide-y divide-stone-200 max-h-[640px] overflow-y-auto">
+            {items.slice(0, 200).map(i => (
+              <li key={i.id} className="p-3 flex gap-3 items-start">
+                <span className="mt-1.5 w-2.5 h-2.5 rounded-full shrink-0" style={{ background: SENT[i.sentiment] }} title={i.sentiment} />
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs text-stone-500 flex flex-wrap gap-x-3">
+                    <b style={{ color: i.bank === NBE ? GREEN : "#16241E" }}>{i.bank}</b>
+                    <span>{i.platform}</span><span>{i.type}</span>
+                    <span>{i.date} {i.time}</span>
+                    {i.engagement > 0 && <span>تفاعل {n(i.engagement)}</span>}
+                  </div>
+                  <a href={i.url} target="_blank" rel="noopener" className="block font-medium hover:underline">{i.title}</a>
+                  <p className="text-sm text-stone-700">{i.summary}</p>
+                </div>
+                <button className="text-xs border border-stone-300 rounded px-2 py-1 shrink-0"
+                  onClick={() => shareWA(`${i.bank} | ${i.summary}\nالانطباع: ${i.sentiment}\n${i.url}`)}>واتساب</button>
+              </li>))}
+          </ul>
+        </section>
+      </>}
+
+      {tab === "bench" && (
+        <section className="panel p-4 space-y-4">
+          {!bm ? <p className="text-stone-500">لم يُنتج التقرير الأول بعد. سيظهر هنا بعد جمع بيانات كافية.</p> : <>
+            <div className="flex justify-between items-center">
+              <h2 className="font-semibold">مقارنة {NBE} بالمنافسين — آخر {bm.period_days} أيام</h2>
+              <button className="text-xs border border-stone-300 rounded px-2 py-1"
+                onClick={() => shareWA("تقرير المقارنة\n" + bm.analysis)}>مشاركة عبر واتساب</button>
+            </div>
+            <div className="text-xs text-stone-500">أُنتج: {new Date(bm.generated).toLocaleString("ar-EG", { timeZone: "Africa/Cairo" })}</div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-right">
+                <thead><tr className="border-b border-stone-300"><th className="p-2">البنك</th><th>الرصد</th><th>إيجابي</th><th>محايد</th><th>سلبي</th></tr></thead>
+                <tbody>{Object.entries(bm.stats).sort((a, b) => b[1].count - a[1].count).map(([b, s]) => (
+                  <tr key={b} className="border-b border-stone-100" style={b === NBE ? { background: "#E6F1EC", fontWeight: 600 } : {}}>
+                    <td className="p-2">{b}</td><td>{n(s.count)}</td><td>{n(s.positive)}</td><td>{n(s.neutral)}</td><td>{n(s.negative)}</td></tr>))}
+                </tbody>
+              </table>
+            </div>
+            <p className="whitespace-pre-wrap leading-8 max-w-3xl">{bm.analysis}</p>
+          </>}
+        </section>
+      )}
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
