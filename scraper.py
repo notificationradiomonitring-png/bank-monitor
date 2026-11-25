@@ -108,17 +108,17 @@ def get_model(headers):
     r = requests.get(m_url, headers=headers, timeout=30)
     r.raise_for_status()
     ids = [m["id"] for m in r.json().get("data", []) if "whisper" not in m["id"] and "guard" not in m["id"]]
-    for pref in ["llama-3.3-70b", "gpt-oss", "llama", "qwen", "gemma"]:
+    for pref in ["llama-3.3", "llama-3.1", "qwen", "gemma", "llama", "gpt-oss"]:
         for mid in ids:
             if pref in mid.lower():
                 _ACTIVE_MODEL = mid
                 print("Using Groq model:", _ACTIVE_MODEL)
                 return _ACTIVE_MODEL
-    _ACTIVE_MODEL = ids
+    _ACTIVE_MODEL = ids[int(chr(48))]
     print("Using Groq model:", _ACTIVE_MODEL)
     return _ACTIVE_MODEL
 
-def ask_groq(prompt, system, max_tokens=4000):
+def ask_groq(prompt, system, max_tokens=2500):
     api_url = "https:" + chr(47) + chr(47) + "api." + "groq.com" + chr(47) + "openai" + chr(47) + "v1" + chr(47) + "chat" + chr(47) + "completions"
     headers = {"Authorization": f"Bearer {os.environ['GROQ_API_KEY']}", "Content-Type": "application/json"}
     model_id = get_model(headers)
@@ -126,31 +126,34 @@ def ask_groq(prompt, system, max_tokens=4000):
         json={"model": model_id, "max_tokens": max_tokens, "temperature": 0.2,
               "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}]})
     if r.status_code != 200:
-        print("Groq detail:", r.status_code, r.text[:300])
+        print("Groq detail:", r.status_code, r.text[:250])
     r.raise_for_status()
-    return r.json()["choices"]["message"]["content"]
+    return r.json()["choices"][int(chr(48))]["message"]["content"]
+
 def analyze(items):
-    system = "أنت محلل رصد إعلامي للقطاع المصرفي المصري. أجب بمصفوفة JSON صالحة فقط بدون أي نص آخر أو علامات Markdown."
+    system = "You are an Egyptian banking media analyst. Return ONLY a valid JSON array with no markdown."
     kept = []
-    for i in range(0, len(items), 15):
-        batch = items[i:i + 15]
-        payload = [{"id": b["id"], "bank": b["bank"], "platform": b["platform"], "title": b["title"], "text": b["snippet"]} for b in batch]
+    for i in range(0, min(len(items), 40), 10):
+        batch = items[i:i + 10]
+        payload = [{"id": b["id"], "bank": b["bank"], "platform": b["platform"], "title": b["title"], "text": b["snippet"][:180]} for b in batch]
         prompt = (
-            "لكل عنصر أرجع كائناً بالحقول: id, relevant (true إذا كان المحتوى يخص البنك المذكور فعلاً), "
-            "summary (ملخص عربي في جملة أو جملتين), type (خبر | إعلان/حملة | منتج/خدمة | مالي/نتائج | شكوى/خدمة عملاء | تنظيمي | أخرى), "
-            "sentiment (إيجابي | سلبي | محايد).\nأرجع مصفوفة JSON فقط.\n" + json.dumps(payload, ensure_ascii=False))
+            "Return a JSON array only. For each item return: id, relevant (true if about the bank), "
+            "summary (concise 1-sentence English summary), type (News | Campaign | Product | Financial | Complaint | Other), "
+            "sentiment (إيجابي | سلبي | محايد).\n" + json.dumps(payload, ensure_ascii=False))
         try:
-            txt = re.sub(r"^```(?:json)?|```$", "", ask_groq(prompt, system).strip(), flags=re.M).strip()
-            res = {x["id"]: x for x in json.loads(txt)}
-            time.sleep(2)
+            raw_res = ask_groq(prompt, system).strip()
+            m = re.search(r"\[.*\]", raw_res, flags=re.S)
+            res = {x["id"]: x for x in json.loads(m.group(0) if m else raw_res)}
+            time.sleep(12)
         except Exception as ex:
-            print("analysis error", ex)
+            print("analysis error:", ex)
+            time.sleep(15)
             continue
         for b in batch:
             b["_done"] = True
             x = res.get(b["id"])
             if x and x.get("relevant"):
-                b.update(summary=x.get("summary", b["title"]), type=x.get("type", "أخرى"), sentiment=x.get("sentiment", "محايد"))
+                b.update(summary=x.get("summary", b["title"]), type=x.get("type", "News"), sentiment=x.get("sentiment", "محايد"))
                 kept.append(b)
     return kept
 
