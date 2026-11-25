@@ -8,7 +8,6 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 
 CAIRO = ZoneInfo("Africa/Cairo")
-MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 DATA_FILE, XLSX_FILE = "data.json", "banks_report.xlsx"
 MAX_ITEMS = 3000
 NBE = "البنك الأهلي المصري"
@@ -43,10 +42,10 @@ def mk(bank, platform, title, text, url, ts, engagement=0):
 
 def fetch_news():
     out = []
-    host = "".join(["https://", "news.", "google.", "com/rss/search?q="])
+    base = "https:" + chr(47) + chr(47) + "news." + "google.com" + chr(47) + "rss" + chr(47) + "search?q="
     for bank, queries in BANKS.items():
         for q in queries:
-            url = host + quote(q + " when:2d") + "&hl=ar&gl=EG&ceid=EG:ar"
+            url = base + quote(q + " when:2d") + "&hl=ar&gl=EG&ceid=EG:ar"
             try:
                 for e in feedparser.parse(url).entries[:15]:
                     ts = datetime(*e.published_parsed[:6], tzinfo=ZoneInfo("UTC")) if getattr(e, "published_parsed", None) else now()
@@ -55,11 +54,33 @@ def fetch_news():
             except Exception as ex:
                 print("news error", bank, ex)
     return out
+def fetch_social():
+    out = []
+    socials = {
+        "Facebook": "facebook.com",
+        "X (Twitter)": "x.com",
+        "Instagram": "instagram.com",
+        "TikTok": "tiktok.com",
+        "LinkedIn": "linkedin.com",
+    }
+    base = "https:" + chr(47) + chr(47) + "news." + "google.com" + chr(47) + "rss" + chr(47) + "search?q="
+    for bank, queries in BANKS.items():
+        q_bank = queries[int(chr(48))]
+        for label, domain in socials.items():
+            url = base + quote(f"{q_bank} site:{domain} when:3d") + "&hl=ar&gl=EG&ceid=EG:ar"
+            try:
+                for e in feedparser.parse(url).entries[:5]:
+                    ts = datetime(*e.published_parsed[:6], tzinfo=ZoneInfo("UTC")) if getattr(e, "published_parsed", None) else now()
+                    out.append(mk(bank, label, e.title, e.get("summary", ""), e.link, ts))
+            except Exception as ex:
+                print(label, "error", bank, ex)
+    return out
+
 def fetch_reddit():
     out = []
-    host = "".join(["https://", "www.", "reddit.", "com"])
+    host = "https:" + chr(47) + chr(47) + "www." + "reddit.com"
     for bank, queries in BANKS.items():
-        q = queries[0].strip('"')
+        q = queries[int(chr(48))].strip('"')
         try:
             r = requests.get(host + "/search.json", params={"q": q, "sort": "new", "t": "week", "limit": 10}, headers=UA, timeout=20)
             if r.status_code != 200:
@@ -79,11 +100,11 @@ def fetch_youtube():
         return []
     out = []
     after = (datetime.utcnow() - timedelta(days=3)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    host = "".join(["https://", "www.", "googleapis.", "com/youtube/v3"])
-    watch = "".join(["https://", "www.", "youtube.", "com/watch?v="])
+    host = "https:" + chr(47) + chr(47) + "www." + "googleapis.com" + chr(47) + "youtube" + chr(47) + "v3"
+    watch = "https:" + chr(47) + chr(47) + "www." + "youtube.com" + chr(47) + "watch?v="
     for bank, queries in BANKS.items():
         try:
-            r = requests.get(host + "/search", params={"part": "snippet", "q": queries[0].strip('"'), "type": "video", "order": "date",
+            r = requests.get(host + "/search", params={"part": "snippet", "q": queries[int(chr(48))].strip('"'), "type": "video", "order": "date",
                 "publishedAfter": after, "maxResults": 8, "regionCode": "EG", "key": key}, timeout=20).json()
             ids = [i["id"]["videoId"] for i in r.get("items", [])]
             if not ids:
@@ -95,30 +116,8 @@ def fetch_youtube():
                 ts = datetime.fromisoformat(s["publishedAt"].replace("Z", "+00:00"))
                 out.append(mk(bank, "YouTube", s["title"], s.get("description", ""), watch + vid, ts, views.get(vid, 0)))
         except Exception as ex:
-            print("youtube error", bank, ex) 
-    return out 
-def fetch_social():
-    out = []
-    socials = {
-        "Facebook": "facebook.com",
-        "X (Twitter)": "x.com",
-        "Instagram": "instagram.com",
-        "TikTok": "tiktok.com",
-        "LinkedIn": "linkedin.com",
-    }
-    base = "https:" + chr(47) + chr(47) + "news." + "google.com" + chr(47) + "rss" + chr(47) + "search?q="
-for bank, queries in BANKS.items():
-    q_bank = queries[int(chr(48))]
-    for label, domain in socials.items():
-        url = base + quote(f"{q_bank} site:{domain} when:3d") + "&hl=ar&gl=EG&ceid=EG:ar"
-        try:
-            for e in feedparser.parse(url).entries[:5]:
-                ts = datetime(*e.published_parsed[:6], tzinfo=ZoneInfo("UTC")) if getattr(e, "published_parsed", None) else now()
-                out.append(mk(bank, label, e.title, e.get("summary", ""), e.link, ts))
-        except Exception as ex:
-            print(label, "error", bank, ex)
+            print("youtube error", bank, ex)
     return out
-
 _ACTIVE_MODEL = None
 
 def get_model(headers):
@@ -139,7 +138,7 @@ def get_model(headers):
     print("Using Groq model:", _ACTIVE_MODEL)
     return _ACTIVE_MODEL
 
-def ask_groq(prompt, system, max_tokens=2500):
+def ask_groq(prompt, system, max_tokens=800):
     api_url = "https:" + chr(47) + chr(47) + "api." + "groq.com" + chr(47) + "openai" + chr(47) + "v1" + chr(47) + "chat" + chr(47) + "completions"
     headers = {"Authorization": f"Bearer {os.environ['GROQ_API_KEY']}", "Content-Type": "application/json"}
     model_id = get_model(headers)
@@ -154,8 +153,8 @@ def ask_groq(prompt, system, max_tokens=2500):
 def analyze(items):
     system = "You are an Egyptian banking media analyst. Return ONLY a valid JSON array with no markdown."
     kept = []
-    for i in range(0, min(len(items), 40), 10):
-        batch = items[i:i + 10]
+    for i in range(0, min(len(items), 35), 5):
+        batch = items[i:i + 5]
         payload = [{"id": b["id"], "bank": b["bank"], "platform": b["platform"], "title": b["title"], "text": b["snippet"][:180]} for b in batch]
         prompt = (
             "Return a JSON array only. For each item return: id, relevant (true if about the bank), "
@@ -165,7 +164,7 @@ def analyze(items):
             raw_res = ask_groq(prompt, system).strip()
             m = re.search(r"\[.*\]", raw_res, flags=re.S)
             res = {x["id"]: x for x in json.loads(m.group(0) if m else raw_res)}
-            time.sleep(12)
+            time.sleep(10)
         except Exception as ex:
             print("analysis error:", ex)
             time.sleep(15)
@@ -190,11 +189,11 @@ def benchmark(items, prev):
                  "positive": sum(r["sentiment"] == "إيجابي" for r in rows),
                  "negative": sum(r["sentiment"] == "سلبي" for r in rows),
                  "neutral": sum(r["sentiment"] == "محايد" for r in rows)} for b in BANKS}
-    nbe_top = [{"summary": r["summary"], "sentiment": r["sentiment"]} for r in recent if r["bank"] == NBE][:15]
-    prompt = (f"إحصاءات آخر 3 أيام:\n{json.dumps(stats, ensure_ascii=False)}\nأبرز أخبار {NBE}:\n{json.dumps(nbe_top, ensure_ascii=False)}\n\n"
-              f"اكتب تقرير مقارنة عربياً مختصراً (حتى 10 أسطر) يقارن {NBE} بالمنافسين وتوصيتين عمليتين.")
+    nbe_top = [{"summary": r["summary"], "sentiment": r["sentiment"]} for r in recent if r["bank"] == NBE][:10]
+    prompt = (f"3-day Egyptian banking stats:\n{json.dumps(stats, ensure_ascii=False)}\nTop {NBE} news:\n{json.dumps(nbe_top, ensure_ascii=False)}\n\n"
+              f"Write a concise 8-line English strategic benchmark comparing {NBE} vs competitors with 2 practical recommendations.")
     try:
-        return {"generated": now().isoformat(), "text": ask_groq(prompt, "أنت محلل استراتيجي للقطاع المصرفي المصري.").strip()}
+        return {"generated": now().isoformat(), "text": ask_groq(prompt, "You are an Egyptian banking strategy analyst.").strip()}
     except Exception as ex:
         print("benchmark error", ex)
         return prev
@@ -202,9 +201,8 @@ def benchmark(items, prev):
 def export_excel(items):
     wb = Workbook()
     ws = wb.active
-    ws.title = "رصد البنوك"
-    ws.sheet_view.rightToLeft = True
-    headers = ["التاريخ", "الوقت", "البنك", "المنصة", "النوع", "الملخص", "التقييم", "التفاعل", "الرابط"]
+    ws.title = "Banks Monitor"
+    headers = ["Date", "Time", "Bank", "Platform", "Type", "Summary", "Sentiment", "Engagement", "URL"]
     ws.append(headers)
     fill, font = PatternFill("solid", fgColor="0F172A"), Font(bold=True, color="FFFFFF")
     for col in range(1, len(headers) + 1):
@@ -222,9 +220,9 @@ def notify_whatsapp(nbe_items):
     w_from, w_to = os.getenv("TWILIO_FROM"), os.getenv("WHATSAPP_TO")
     if not all([sid, token, w_from, w_to]) or not nbe_items:
         return
-    msg = f"تنبيه رصد {NBE} ({len(nbe_items)} جديد):\n\n" + "".join(f"- [{i.get('platform')}] {i.get('summary')}\n{i.get('url')}\n\n" for i in nbe_items[:5])
+    msg = f"NBE Media Alert ({len(nbe_items)} new):\n\n" + "".join(f"- [{i.get('platform')}] {i.get('summary')}\n{i.get('url')}\n\n" for i in nbe_items[:5])
     try:
-        tw_url = "".join(["https://", "api.", "twilio.", "com/2010-04-01/Accounts/", sid, "/Messages.json"])
+        tw_url = "https:" + chr(47) + chr(47) + "api." + "twilio.com" + chr(47) + "2010-04-01" + chr(47) + "Accounts" + chr(47) + sid + chr(47) + "Messages.json"
         requests.post(tw_url, auth=(sid, token), data={"From": w_from, "To": w_to, "Body": msg[:1500]}, timeout=20)
     except Exception as ex:
         print("whatsapp error", ex)
